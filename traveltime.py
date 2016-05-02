@@ -9,10 +9,12 @@ from datetime import datetime
 import os
 import json
 
-params = json.load(open('params.secret'))
+PATH = '/home/ben/traveltime/'
 
-with open("key.secret") as fin:
-    key = fin.readline()
+params = json.load(open(PATH + 'params.secret'))
+
+with open(PATH + "key.secret") as fin:
+    key = fin.readline()[0:-1]
 
 gmaps = googlemaps.Client(key=key)
 
@@ -37,8 +39,10 @@ for i in range(len(params['Destinations'].keys())):
 
 print out
 
-if not os.path.exists('log.csv'):
-    with open('log.csv', 'w') as fout:
+logfile = PATH + 'log.csv'
+
+if not os.path.exists(logfile):
+    with open(logfile, 'w') as fout:
         fout.write('Time,')
         for dest in params['Destinations'].values():
             for src in params['Origins'].values():
@@ -53,8 +57,8 @@ if not os.path.exists('log.csv'):
                 fout.write('%s to %s Time w/ Traffic (min),' % (dest, src))
         fout.write('\n')
 
-with open('log.csv', 'a') as fout:
+with open(logfile, 'a') as fout:
     fout.write(out + '\n')
 
-with open('dump.txt', 'a') as fout:
+with open(PATH + 'dump.txt', 'a') as fout:
     fout.write(str(res_forward) + '::::' + str(res_reverse) + '\n')
